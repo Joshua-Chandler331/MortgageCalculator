@@ -36,13 +36,13 @@ function CalculateM(){
     
     //var totalInterest = interestPayment;
     //var totalInterest2 = totalInterest2
-    var pp = principalPayment;
-    var total = amount;
-    var paymentInterest = interestPayment;
+    //var pp = principalPayment;
+   // var total = amount;
+    //var paymentInterest = interestPayment;
     //var total2 = totalMonthly;
-    var months = numberOfMonths;
-    var num1, num2, num3 = -1;
-
+    //var months = numberOfMonths;
+    //var num1, num2, num3 = -1;
+/*
     for (let index = 0; index < numberOfMonths; index++) {
 
         document.getElementById("output7").innerText += "Payment: " + totalMonthly + " | Principal: " + pp + " | Interest: " + paymentInterest + "\n";
@@ -57,7 +57,7 @@ function CalculateM(){
         pp = monthlyTotal - paymentInterest;
         months -1;
     }
-
+*/
 }
 
 function Clear(){
