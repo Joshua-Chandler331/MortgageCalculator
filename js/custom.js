@@ -1,54 +1,63 @@
 document.getElementById("btnSH").addEventListener("click", CalculateM);
 document.getElementById("btnClear").addEventListener("click", Clear);
 
-
 function CalculateM(){
-    let amount= parseFloat(document.getElementById("amount").value);
-    let rate= parseFloat(document.getElementById("rate").value);
-    let number= parseFloat(document.getElementById("numberOfMonths").value);
-    let rate1,rate2,rate3,rate4,num1,num2,num3=-1.00;
-    let month = -1;
 
-    /* first part */
-     rate2= rate/1200;
-    //document.getElementById("output1").innerHTML += `${rate2}`;
-     num1=amount*rate2;
-    //document.getElementById("output2").innerHTML += `${num1}`;
-    /* second part */
-     rate3=1+rate2;
-    //document.getElementById("output3").innerHTML += `${rate3}`;
-     rate4=Math.pow(rate3,-number);
-    //document.getElementById("output4").innerHTML += `${rate4}`;
-     num2=1-rate4;
-   //document.getElementById("output5").innerHTML += `${num2}`;
-    /* Third part */
-     num3 = num1/num2;
-    document.getElementById("output1").innerHTML += `${num3}`;
-   /*
-    totalAmount = ((amount)*(rate/1200))/(1-(1+rate/1200)^(-number))
-    */
+    // declaring variables
+    var amount = document.getElementById("amount");
+    var rate = document.getElementById("rate");
+    var numberOfMonths = document.getElementById("numberOfMonths");
 
-    // first month
-    let remainPreFirst = amount-num3;
-    //All after
+    var ratePercent = parseFloat(rate.value)/1200;
+    amount = parseFloat(amount.value);
+    numberOfMonths = parseInt(numberOfMonths.value);
+
+    // Formula for the Total monthly
+    var firstPart=(amount)*(ratePercent);
+    var num1=1+ratePercent;
+    var secondPart=(1-(Math.pow(num1,-numberOfMonths)));
+    var totalMonthly= firstPart/secondPart;
     
+    var interestPayment=amount*ratePercent;
+    var principalPayment=(totalMonthly - interestPayment);
+    var remainingBalance=(amount-principalPayment);
 
-    //intrest payment
-    let rateIP = num3 *rate2;
+    principalPayment=principalPayment.toFixed(2);
+    remainingBalance=remainingBalance.toFixed(2);
+    interestPayment=interestPayment.toFixed(2);
+    totalMonthly = totalMonthly.toFixed(2);
 
-    for (let index = 0; index < number; index++) {
-    month=index;
+    document.getElementById("output1").innerText += "Remaining balance first month: " + amount;
+    document.getElementById("output2").innerText += "Interest rate: " + ratePercent.toFixed(4);
+    document.getElementById("output3").innerText += "Interest payment: " + interestPayment;
+    document.getElementById("output4").innerText += "total Monthly: " + totalMonthly;
+    document.getElementById("output5").innerText += "principal payment: " + principalPayment;
+    document.getElementById("output6").innerText += "Remaining Balance: " + remainingBalance;
     
-    ratePL = remainPreFirst-rateIP;
-    document.getElementById("output2").innerHTML += `Month: ${month}<br> Payment Due:${remainPreFirst}<br> Interest Payment: ${rateIP}<br> Principle Payment: ${ratePL}<hr><br>`;
-    if(remainPreFirst > num3){
-        remainPreFirst = remainPreFirst-num3;
+    //var totalInterest = interestPayment;
+    //var totalInterest2 = totalInterest2
+    var pp = principalPayment;
+    var total = amount;
+    var paymentInterest = interestPayment;
+    //var total2 = totalMonthly;
+    var months = numberOfMonths;
+    var num1, num2, num3 = -1;
+
+    for (let index = 0; index < numberOfMonths; index++) {
+
+        document.getElementById("output7").innerText += "Payment: " + totalMonthly + " | Principal: " + pp + " | Interest: " + paymentInterest + "\n";
+    
+        // Formula for the Total monthly
+         num1 = (total) * (ratePercent);
+         num2 = 1 + ratePercent;
+         num3 = (1-(Math.pow(num2,-months)));
+         monthlyTotal= num1/num3;
+         
+        paymentInterest = total * ratePercent;
+        pp = monthlyTotal - paymentInterest;
+        months -1;
     }
-    else{
-        remainPreFirst = num3 - remainPreFirst;
-    }
-    rateIP = num3 * rate2;
-    }
+
 }
 
 function Clear(){
