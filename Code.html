@@ -35,75 +35,93 @@
 
     <pre class="language-javascript">
         <code class="line-numbers">
-            document.getElementById("btnSH").addEventListener("click", CalculateM);
-            document.getElementById("btnClear").addEventListener("click", Clear);
+            //Wire up our button
+            document.getElementById("btnCalc").addEventListener("click", buildSchedule);
             
-            function CalculateM(){
+            document.getElementById("scheduleTable").style.visibility = "hidden";  
             
-                // declaring variables
-                var amount = document.getElementById("amount");
-                var rate = document.getElementById("rate");
-                var numberOfMonths = document.getElementById("numberOfMonths");
-            
-                var ratePercent = parseFloat(rate.value)/1200;
-                amount = parseFloat(amount.value);
-                numberOfMonths = parseInt(numberOfMonths.value);
-            
-                // Formula for the Total monthly
-                var firstPart=(amount)*(ratePercent);
-                var num1=1+ratePercent;
-                var secondPart=(1-(Math.pow(num1,-numberOfMonths)));
-                var totalMonthly= firstPart/secondPart;
-                
-                var interestPayment=amount*ratePercent;
-                var principalPayment=(totalMonthly - interestPayment);
-                var remainingBalance=(amount-principalPayment);
-            
-                principalPayment=principalPayment.toFixed(2);
-                remainingBalance=remainingBalance.toFixed(2);
-                interestPayment=interestPayment.toFixed(2);
-                totalMonthly = totalMonthly.toFixed(2);
-            
-                document.getElementById("output1").innerText += "Remaining balance first month: " + amount;
-                document.getElementById("output2").innerText += "Interest rate: " + ratePercent.toFixed(4);
-                document.getElementById("output3").innerText += "Interest payment: " + interestPayment;
-                document.getElementById("output4").innerText += "total Monthly: " + totalMonthly;
-                document.getElementById("output5").innerText += "principal payment: " + principalPayment;
-                document.getElementById("output6").innerText += "Remaining Balance: " + remainingBalance;
-                
-                //var totalInterest = interestPayment;
-                //var totalInterest2 = totalInterest2
-                var pp = principalPayment;
-                var total = amount;
-                var paymentInterest = interestPayment;
-                //var total2 = totalMonthly;
-                var months = numberOfMonths;
-                var num1, num2, num3 = -1;
-            
-                for (let index = 0; index < numberOfMonths; index++) {
-            
-                    document.getElementById("output7").innerText += "Payment: " + totalMonthly + " | Principal: " + pp + " | Interest: " + paymentInterest + "\n";
-                
-                    // Formula for the Total monthly
-                     num1 = (total) * (ratePercent);
-                     num2 = 1 + ratePercent;
-                     num3 = (1-(Math.pow(num2,-months)));
-                     monthlyTotal= num1/num3;
-                     
-                    paymentInterest = total * ratePercent;
-                    pp = monthlyTotal - paymentInterest;
-                    months -1;
-                }
-            
+            //Calculate the loan payment
+            function calcPayment(amount, rate, term) {
+                return (amount * rate) / (1 - Math.pow(1 + rate, -term));
             }
             
-            function Clear(){
-                document.getElementById("output1").innerHTML = "";
-                document.getElementById("output2").innerHTML = "";
-                document.getElementById("output3").innerHTML = "";
-                document.getElementById("output4").innerHTML = "";
-                document.getElementById("output5").innerHTML = "";
-                document.getElementById("output6").innerHTML = "";
+            //Calcuate the interest for the current balance of the loan
+            function calcInterest(balance, rate) {
+                return balance * rate;
+            }
+            
+            //this function will build our loan schedule
+            function buildSchedule() {
+                
+                //Make the table visible I don't want the table show unless there are values
+                document.getElementById("scheduleTable").style.visibility = "visible";    
+            
+            
+                //Get the values from out inputs
+                let amount = document.getElementById("loanAmount").value;
+                let rate = document.getElementById("loanRate").value;
+                let term = document.getElementById("loanTerm").value;
+            
+                //Convert the input rate to a monthly rate
+                rate = rate / 1200;
+            
+                //Calulate the payments
+            
+                //setup some variables that hold values in the schedule
+                let payment = calcPayment(amount, rate, term);
+                let balance = amount;
+                let totalInterest = 0;
+                let monthlyPrincipal = 0;
+                let monthlyInterest = 0;
+                let monthlyTotalInterest = 0;
+            
+                //Write the results to our table
+                let scheduleBody = document.getElementById("scheduleBody");
+                let scheduleRow = "";
+                //reset the table
+                scheduleBody.innerHTML = "";
+            
+                for (month = 1; month <= term; month++) {
+            
+                    monthlyInterest = calcInterest(balance, rate);
+                    totalInterest += monthlyInterest;
+                    monthlyPrincipal = payment - monthlyInterest;
+                    balance = balance - monthlyPrincipal;
+            
+                    //Write these values to the table
+                    scheduleRow = `<tr><td>${month}</td>
+                    <td>${payment.toFixed(2)}</td>
+                    <td>${monthlyPrincipal.toFixed(2)}</td>
+                    <td>${monthlyInterest.toFixed(2)}</td>
+                    <td>${totalInterest.toFixed(2)}</td>
+                    <td>${balance.toFixed(2)}</td>
+                    </tr>`;
+            
+                    scheduleBody.innerHTML += scheduleRow;
+                }
+            
+                document.getElementById("payment").innerHTML = Number(payment).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                });
+            
+                document.getElementById("totalPrincipal").innerHTML = Number(amount).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                });
+            
+                document.getElementById("totalInterest").innerHTML = Number(totalInterest).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                });
+            
+                let totalCost = Number(amount) + totalInterest;
+            
+                document.getElementById("totalCost").innerHTML = Number(totalCost).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                });
+            
             }
         </code>
     </pre>
